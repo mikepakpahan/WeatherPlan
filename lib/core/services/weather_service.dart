@@ -13,13 +13,15 @@ class WeatherService {
 
   Future<List<dynamic>> fetchHourlyForecast(double lat, double lon) async {
     final url =
-        'https://api.openweathermap.org/data/2.5/onecall?lat=$lat&lon=$lon&exclude=current,minutely,daily,alerts&units=metric&appid=$apiKey';
+        'https://api.openweathermap.org/data/2.5/forecast?lat=$lat&lon=$lon&units=metric&appid=$apiKey';
+    print('3-hour forecast URL: $url');
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      return data['hourly'];
+      return data['list']; // 'list' berisi array forecast 3 jam sekali
     } else {
-      throw Exception('Failed to load hourly forecast');
+      print('3-hour forecast error: ${response.body}');
+      throw Exception('Failed to load 3-hour forecast');
     }
   }
 }

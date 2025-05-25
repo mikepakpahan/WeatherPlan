@@ -52,7 +52,7 @@ class HourlyForecastModel {
   factory HourlyForecastModel.fromJson(Map<String, dynamic> json) {
     return HourlyForecastModel(
       dt: json['dt'],
-      temp: (json['temp'] as num).toDouble(),
+      temp: (json['main']['temp'] as num).toDouble(),
       icon: json['weather'][0]['icon'],
     );
   }
