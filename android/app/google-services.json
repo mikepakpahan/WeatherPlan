@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "866111456899",
+    "project_id": "weatherplan-be037",
+    "storage_bucket": "weatherplan-be037.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:866111456899:android:4bc9ca31d2f11581237db6",
+        "android_client_info": {
+          "package_name": "com.example.weather_plan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8ieJtrA_F5eoRQKnJ8A955I4_Imixte4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

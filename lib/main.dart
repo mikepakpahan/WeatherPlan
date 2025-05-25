@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'features/weather/screens/home_page.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MainApp());
 }
 
@@ -31,10 +35,9 @@ class _MainScaffoldState extends State<MainScaffold> {
   int _selectedIndex = 1;
 
   final List<Widget> _pages = [
-    // Ganti dengan halaman lain jika ada
-    Placeholder(), // List page
-    HomePage(),
-    Placeholder(), // Profile page
+    Placeholder(), // Ganti sesuai kebutuhan
+    const HomePage(),
+    Placeholder(), // Ganti sesuai kebutuhan
   ];
 
   @override

@@ -6,6 +6,7 @@ import 'package:weather_plan/features/weather/widgets/weather_info_card.dart';
 import 'dart:ui';
 import 'package:weather_plan/features/weather/widgets/hourly_forecast_card.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,12 +17,25 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final WeatherService _weatherService = WeatherService();
+  final DatabaseReference _dbRef = FirebaseDatabase.instance.ref(); // Firebase
+
   WeatherModel? _weather;
+  bool _isJemuranTerbuka = false; // untuk kontrol tombol
 
   @override
   void initState() {
     super.initState();
     _loadWeather();
+    _listenJemuranStatus();
+  }
+
+  void _listenJemuranStatus() {
+    _dbRef.child('jemuran_status').onValue.listen((event) {
+      final status = event.snapshot.value;
+      setState(() {
+        _isJemuranTerbuka = status == 'buka';
+      });
+    });
   }
 
   List<HourlyForecastModel> _hourlyForecast = [];
@@ -48,6 +62,23 @@ class _HomePageState extends State<HomePage> {
       });
     } catch (e) {
       print("Gagal mengambil data cuaca: $e");
+    }
+  }
+
+  Future<void> _toggleJemuran() async {
+    final newStatus = _isJemuranTerbuka ? "tutup" : "buka";
+    try {
+      await _dbRef.child('jemuran_status').set(newStatus);
+      // Tidak perlu setState di sini, karena sudah ada listener
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Jemuran ${newStatus == 'buka' ? 'dibuka' : 'ditutup'}!",
+          ),
+        ),
+      );
+    } catch (e) {
+      print("Gagal mengubah status jemuran: $e");
     }
   }
 
@@ -191,6 +222,12 @@ class _HomePageState extends State<HomePage> {
             },
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _toggleJemuran,
+        label: Text(_isJemuranTerbuka ? 'Tutup Jemuran' : 'Buka Jemuran'),
+        icon: Icon(_isJemuranTerbuka ? Icons.close : Icons.wb_sunny),
+        backgroundColor: Colors.deepPurple,
       ),
     );
   }
