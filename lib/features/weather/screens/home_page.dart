@@ -4,7 +4,6 @@ import 'package:weather_plan/data/models/weather_model.dart';
 import 'package:weather_plan/core/constants/app_constants.dart';
 import 'package:weather_plan/features/weather/widgets/weather_info_card.dart';
 import 'dart:ui';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:weather_plan/features/weather/widgets/hourly_forecast_card.dart';
 import 'package:intl/intl.dart';
 
@@ -192,18 +191,6 @@ class _HomePageState extends State<HomePage> {
             },
           ),
         ],
-      ),
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.transparent,
-        index: 1,
-        items: <Widget>[
-          Icon(Icons.list, size: 30),
-          Icon(Icons.home, size: 40),
-          Icon(Icons.person, size: 30),
-        ],
-        onTap: (index) {
-          //Handle button tap
-        },
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'features/weather/screens/home_page.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 void main() {
   runApp(const MainApp());
@@ -14,7 +15,47 @@ class MainApp extends StatelessWidget {
       title: 'WeatherPlan',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.deepPurple, fontFamily: 'Inter'),
-      home: const HomePage(),
+      home: const MainScaffold(),
+    );
+  }
+}
+
+class MainScaffold extends StatefulWidget {
+  const MainScaffold({super.key});
+
+  @override
+  State<MainScaffold> createState() => _MainScaffoldState();
+}
+
+class _MainScaffoldState extends State<MainScaffold> {
+  int _selectedIndex = 1;
+
+  final List<Widget> _pages = [
+    // Ganti dengan halaman lain jika ada
+    Placeholder(), // List page
+    HomePage(),
+    Placeholder(), // Profile page
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      extendBody: true,
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: CurvedNavigationBar(
+        backgroundColor: Colors.transparent,
+        index: _selectedIndex,
+        items: const [
+          Icon(Icons.list, size: 30),
+          Icon(Icons.home, size: 40),
+          Icon(Icons.person, size: 30),
+        ],
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+      ),
     );
   }
 }
