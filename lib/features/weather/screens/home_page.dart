@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
           DraggableScrollableSheet(
             initialChildSize: 0.35,
             minChildSize: 0.30,
-            maxChildSize: 0.77,
+            maxChildSize: 0.45,
             builder: (context, scrollController) {
               return ClipRRect(
                 borderRadius: const BorderRadius.vertical(
@@ -113,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 10),
                         const Center(
                           child: Text(
                             'Hourly Forecast',
@@ -126,13 +126,50 @@ class _HomePageState extends State<HomePage> {
                         ),
                         const SizedBox(height: 16),
                         SizedBox(
-                          height: 130,
+                          height: 170,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             padding: const EdgeInsets.symmetric(horizontal: 12),
-                            itemCount: _hourlyForecast.length,
+                            itemCount:
+                                _hourlyForecast.length +
+                                2, // +1 untuk "Now", +1 untuk sebelumnya
                             itemBuilder: (context, index) {
-                              final forecast = _hourlyForecast[index];
+                              if (index == 0) {
+                                // Card untuk jam sebelumnya (past hour)
+                                final prevForecast =
+                                    _hourlyForecast.isNotEmpty
+                                        ? _hourlyForecast.first
+                                        : null;
+                                if (prevForecast == null)
+                                  return SizedBox.shrink();
+                                final prevTime =
+                                    DateTime.fromMillisecondsSinceEpoch(
+                                      prevForecast.dt * 1000,
+                                    ).subtract(const Duration(hours: 3));
+                                return HourlyForecastCard(
+                                  time: DateFormat.Hm().format(prevTime),
+                                  icon:
+                                      "http://openweathermap.org/img/wn/${prevForecast.icon}@2x.png",
+                                  temperature:
+                                      prevForecast.temp.round().toString(),
+                                );
+                              }
+                              if (index == 1) {
+                                // Card untuk "Now"
+                                return HourlyForecastCard(
+                                  time: "Now",
+                                  icon:
+                                      "http://openweathermap.org/img/wn/${_weather?.iconCode ?? '01d'}@2x.png",
+                                  temperature:
+                                      _weather?.temperature
+                                          .round()
+                                          .toString() ??
+                                      "-",
+                                  isNow: true, // Tambahkan ini
+                                );
+                              }
+                              // Sisanya: forecast ke depan
+                              final forecast = _hourlyForecast[index - 2];
                               final time = DateTime.fromMillisecondsSinceEpoch(
                                 forecast.dt * 1000,
                               );
@@ -162,7 +199,7 @@ class _HomePageState extends State<HomePage> {
         items: <Widget>[
           Icon(Icons.list, size: 30),
           Icon(Icons.home, size: 40),
-          Icon(Icons.compare_arrows, size: 30),
+          Icon(Icons.person, size: 30),
         ],
         onTap: (index) {
           //Handle button tap
