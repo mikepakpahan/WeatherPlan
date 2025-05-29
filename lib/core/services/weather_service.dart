@@ -24,4 +24,44 @@ class WeatherService {
       throw Exception('Failed to load 3-hour forecast');
     }
   }
+
+  Future<Map<String, dynamic>?> getForecastForTime({
+    required double lat,
+    required double lon,
+    required DateTime targetTime,
+  }) async {
+    final forecastList = await fetchHourlyForecast(lat, lon);
+    Map<String, dynamic>? closestForecast;
+    Duration? closestDiff;
+
+    for (var forecast in forecastList) {
+      final forecastTime = DateTime.parse(forecast['dt_txt']);
+      final diff = forecastTime.difference(targetTime).abs();
+      if (closestDiff == null || diff < closestDiff) {
+        closestDiff = diff;
+        closestForecast = forecast;
+      }
+    }
+
+    return closestForecast;
+  }
+
+  Future<bool> isWeatherSuitableForOutdoorActivity(
+    double lat,
+    double lon,
+    DateTime activityTime,
+  ) async {
+    final forecast = await getForecastForTime(
+      lat: lat,
+      lon: lon,
+      targetTime: activityTime,
+    );
+    if (forecast == null) return false;
+
+    final weather = forecast['weather'][0]['main'];
+    final hasRain = forecast.containsKey('rain') && forecast['rain'] != null;
+
+    // Misal: kita anggap aktivitas luar cocok hanya jika cuaca cerah dan tidak hujan
+    return weather == 'Clear' && !hasRain;
+  }
 }
